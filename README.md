@@ -14,4 +14,4 @@ foo@bar:~$ streamlit run main.py
 
 https://docs.streamlit.io/
 
-Made by Nicolas DENIS
+Made by Nicolas DENIS, Lahoucine IBERDI
