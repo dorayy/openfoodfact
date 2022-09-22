@@ -28,7 +28,7 @@ def check_password(rows, name, pwd):
             return
     st.warning("Incorrect username/password")
 
-# Display results.
+st.title('Authentification')
 name = st.text_input("Name")
 pwd = st.text_input("Password", type="password")
 rows = run_query("SELECT name, pwd from user where name='" + name + "';")
