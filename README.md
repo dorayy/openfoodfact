@@ -1,13 +1,14 @@
 # Install
 
 ```console
-foo@bar:~$ pip install streamlit
+pip install streamlit
+pip install mysql-connector-python
 ```
 
 ## Launch main file
 
 ```console
-foo@bar:~$ streamlit run main.py
+streamlit run main.py
 ```
 
 ## Documentation
