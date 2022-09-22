@@ -30,7 +30,6 @@ SET time_zone = "+00:00";
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `pseudo` varchar(50) NOT NULL,
   `mail` varchar(50) NOT NULL,
   `pwd` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -39,8 +38,8 @@ CREATE TABLE `user` (
 -- Déchargement des données de la table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `pseudo`, `mail`, `pwd`) VALUES
-(1, 'NicoName', 'NicoPseudo', 'NicoMail', 'NicoPwd');
+INSERT INTO `user` (`id`, `name`, `mail`, `pwd`) VALUES
+(1, 'NicoName',  'NicoMail', 'NicoPwd');
 
 --
 -- Index pour les tables déchargées
@@ -61,6 +60,39 @@ ALTER TABLE `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+COMMIT;
+
+
+--
+-- Structure de la table `results`
+--
+CREATE TABLE `results` (
+  `id` int(11) NOT NULL,
+  `id_research` text DEFAULT NULL,
+  `id_substitut` text DEFAULT NULL,
+  `product_name` text DEFAULT NULL,
+  `nutriscore_grade` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `results`
+--
+ALTER TABLE `results`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `results`
+--
+ALTER TABLE `results`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
