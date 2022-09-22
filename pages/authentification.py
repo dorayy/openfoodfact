@@ -28,8 +28,25 @@ def check_password(rows, name, pwd):
             return
     st.warning("Incorrect username/password")
 
+def insert_user(name, pseudo, mail, pwd):
+    print("hey ma couillasse")
+
 st.title('Authentification')
+st.text('Veuillez vous authentifier pour accéder à la page product')
 name = st.text_input("Name")
 pwd = st.text_input("Password", type="password")
 rows = run_query("SELECT name, pwd from user where name='" + name + "';")
 st.button("Connection", on_click=check_password, args=(rows, name, pwd))
+
+st.text('Si vous n\'avez pas de compte, veuillez vous inscrire')
+st.text('Veuillez renseigner les champs suivants')
+new_name = st.text_input("Name inscription")
+new_pseudo = st.text_input("Pseudo inscription")
+new_mail = st.text_input("Mail inscription")
+new_pwd = st.text_input("Password inscription", type="password")
+new_pwd2 = st.text_input("Repeat Password", type="password")
+
+if(new_pwd == new_pwd2 and new_pwd != "" and new_pwd2 != ""):
+    st.button("Inscription", on_click=insert_user, args=(new_name, new_pseudo, new_mail, new_pwd))
+else:
+    st.warning("Les mots de passe ne correspondent pas")
