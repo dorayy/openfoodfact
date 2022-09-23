@@ -2,15 +2,23 @@ import streamlit as st
 import pandas as pd
 import requests
 
-def get_products(nbr_products, page):
-    url = 'https://world.openfoodfacts.org/products.json&page_size='+str(nbr_products)+'&page='+str(page)+''
+def get_products(nbr_products, page, category, grade):
+    url = 'https://world.openfoodfacts.org/cgi/search.pl?json=true&action=process&tagtype_0=categories&tag_contains_0=contains&tag_0='+ str(category) +'&tagtype_1=nutrition_grades&tag_contains_1=contains&tag_1='+ str(grade) +'&page_size='+str(nbr_products)+'&page='+str(page)+''
     response = requests.get(url)
     return response.json().get('products')
 
-def get_number_products(number):
-    url = 'https://world.openfoodfacts.org/products.json'
+def get_categories():
+    url = 'https://world.openfoodfacts.org/categories.json'
     response = requests.get(url)
-    return response.json().get('count') / number
+    return response.json()
+
+def get_number_products(nbr_products, category, grade):
+    url = 'https://world.openfoodfacts.org/cgi/search.pl?json=true&action=process&tagtype_0=categories&tag_contains_0=contains&tag_0='+ str(category) +'&tagtype_1=nutrition_grades&tag_contains_1=contains&tag_1='+ str(grade) +''
+    response = requests.get(url)
+    number = response.json().get('count') / nbr_products
+    if number < 1 and number != 0:
+        number = 1
+    return number
 
 def dataframe_products(products):
     df = pd.DataFrame(columns= ['id', 'name', 'brands', 'allergens', 'categories', 'ecoscore_grade','ecoscore_score', 'expiration_date', 'image_url', 'nutriscore_grade', 'nutriscore_score','product_quantity', 'scans_n', 'stores'])
@@ -56,6 +64,7 @@ def dataframe_products(products):
     df.dropna()
     return df
 
+
 def sort_products(df, name):
     if (name == False):
         return df
@@ -65,7 +74,7 @@ def sort_products(df, name):
 
 def displayProducts(nbr_of_products_per_page, columnFilter):
     st.session_state.page_number = 1
-    last_page = get_number_products(nbr_of_products_per_page) 
+    last_page = get_number_products(nbr_of_products_per_page, columnFilter, "A") 
 
     if 'count' not in st.session_state:
         st.session_state.count = 1
@@ -83,19 +92,14 @@ def displayProducts(nbr_of_products_per_page, columnFilter):
     prev.button('Previous', on_click=decrement_counter, kwargs=dict(decrement_value=1))
     next.button('Next', on_click=increment_counter, kwargs=dict(increment_value=1))
 
-    products = get_products(nbr_of_products_per_page, st.session_state.count)
+    products = get_products(nbr_of_products_per_page, st.session_state.count, columnFilter, "A")
     dfAll = dataframe_products(products)
-    dfAll = sort_products(dfAll, columnFilter)
+    # dfAll = sort_products(dfAll, columnFilter)
     st.write(dfAll) 
     st.write("Page : "+ str(st.session_state.count) +" sur "+ str(int(last_page)))
 
 st.title('Projet Open Food Facts')
-st.write('Filter by Product on API Page') 
-
-df = pd.DataFrame(columns= ['id', 'name', 'brands', 'allergens', 'categories', 'ecoscore_grade','ecoscore_score', 'expiration_date', 'image_url', 'nutriscore_grade', 'nutriscore_score','product_quantity', 'scans_n', 'stores'])
-st.session_state.filter = st.selectbox('Filter', df.columns)
-
-reset, _ ,confirm = st.columns([1, 10, 1])
+st.write('Filter by Categories with "A" nutritious score') 
 
 def selectFilter():
     st.session_state.filter = ""
@@ -103,7 +107,18 @@ def selectFilter():
 
 def filterProducts():
     st.session_state.count = 1
-    displayProducts(20, st.session_state.filter)
+    displayProducts(24, st.session_state.filter)
+
+if 'categories' not in st.session_state:
+    cat = []
+    allCategories = get_categories()
+    for i in allCategories['tags']:
+        cat.append(i['name'])
+    st.session_state.categories = cat
+
+st.session_state.filter = st.selectbox('Filter', st.session_state.categories)
+
+reset, _ ,confirm = st.columns([1, 10, 1])
 
 reset.button('Reset', on_click=selectFilter)
 confirm.button('Confirm', on_click=filterProducts)
