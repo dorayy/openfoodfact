@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import requests
+import numpy as np
 
 def get_products(nbr_products, page, category, grade):
     url = 'https://world.openfoodfacts.org/cgi/search.pl?json=true&action=process&tagtype_0=categories&tag_contains_0=contains&tag_0='+ str(category) +'&tagtype_1=nutrition_grades&tag_contains_1=contains&tag_1='+ str(grade) +'&page_size='+str(nbr_products)+'&page='+str(page)+''
@@ -95,6 +96,8 @@ def displayProducts(nbr_of_products_per_page, columnFilter):
     products = get_products(nbr_of_products_per_page, st.session_state.count, columnFilter, "A")
     dfAll = dataframe_products(products)
     # dfAll = sort_products(dfAll, columnFilter)
+    dfAll.replace('', np.nan, inplace=True)
+    dfAll = dfAll.dropna()
     st.write(dfAll) 
     st.write("Page : "+ str(st.session_state.count) +" sur "+ str(int(last_page)))
 
