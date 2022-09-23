@@ -7,18 +7,11 @@ from sqlalchemy import create_engine
 
 st.title('Product détail page')
 
+
+
 # Requete pour recuperer les données du produit par id
 def get_product(barcode):
     url = 'https://world.openfoodfacts.org/api/v0/product/' + barcode + '.json'
-    res = requests.get(url)
-    return res.json()
-
-# Requete de recherche de substitut
-def get_substitut(barcode):
-    product = get_product(barcode)
-    #nutriscore = product['product']['nutriscore_grade']
-    category = product['product']['categories']
-    url = 'https://world.openfoodfacts.org/cgi/search.pl?search_terms=' + category + '&search_simple=1&action=process&json=1'
     res = requests.get(url)
     return res.json()
 
@@ -32,6 +25,18 @@ def show_page():
     st.write("Nutriscore : ", product['product']['nutriscore_grade'])
     st.write("Catégorie : ", product['product']['categories'])
     st.write("Pays de fabrication : ", product['product']['countries'])
+    st.image(product['product']['image_front_url'], width=200)
+
+# Requete de recherche de substitut
+def get_substitut(barcode):
+    product = get_product(barcode)
+    #nutriscore = product['product']['nutriscore_grade']
+    category = product['product']['categories']
+    url = 'https://world.openfoodfacts.org/cgi/search.pl?search_terms=' + category + '&search_simple=1&action=process&json=1'
+    res = requests.get(url)
+    return res.json()
+
+
 
 
 # Search bar avec bouton
@@ -55,16 +60,26 @@ if st.experimental_get_query_params():
         df = pd.DataFrame(subsitutData['products'])
         df = df[['id', 'product_name', 'nutriscore_grade']]
 
+        ## Partie nettoyage
+
         # Filtre proposant les nutriscore supérieur à celui existant
         df = df[df['nutriscore_grade'] < product['product']['nutriscore_grade']]
         df = df.sort_values(by=['nutriscore_grade'])
 
         # Suppression des données incorrectes
-        df = df.dropna(subset=['id'])
+        df = df.dropna(subset=['id', 'product_name', 'nutriscore_grade'])
+        
+        # String upper
+        df['product_name'] = df['product_name'].str.upper()
+        df['nutriscore_grade'] = df['nutriscore_grade'].str.upper()
+
+        # Suppression des doublons
+        df['product_name'] = df['product_name'].str.replace('-', ' ')
+        df = df.drop_duplicates(subset=["product_name"], keep=False)
 
         # On affiche
         st.write("Les substituts trouvés  : ")
-        st.write(df.to_html(), unsafe_allow_html=True)
+        st.write(df)
 
         # Le score
         st.write("Le graphique sur les différents classement nutriscore  : ")
