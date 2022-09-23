@@ -3,7 +3,7 @@ from xml.dom.minidom import TypeInfo
 import streamlit as st
 import pandas as pd
 import requests
-
+from PIL import Image
 
 st.title('Product détail page')
 
@@ -37,13 +37,15 @@ if st.experimental_get_query_params():
     ean = ean.get('ean')[0]
     product = get_product(ean)
 
+
     # Affichage produit
     st.write("Code barre : ", product['code'])
     st.write("Nom : ", product['product']['product_name'])
     st.write("Marque : ", product['product']['brands'])
     st.write("Quantité : ", product['product']['quantity'])
     st.write("Nutriscore : ", product['product']['nutriscore_grade'])
-    st.write("Catégorie : ", product['product']['categories']) 
+    st.write("Catégorie : ", product['product']['categories'])
+    st.image(product['product']['selected_images']['front']['display']['fr'])
 
     if st.button('Recherche des subsituts'):
         subsitutData = get_substitut(ean)
