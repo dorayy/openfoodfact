@@ -97,9 +97,8 @@ def displayProducts(nbr_of_products_per_page, columnFilter):
     dfAll = dataframe_products(products)
     # dfAll = sort_products(dfAll, columnFilter)
     dfAll.replace('', np.nan, inplace=True)
-    dfAll = dfAll.dropna()
+    dfAll = dfAll.dropna(subset=['expiration_date','name','ecoscore_grade'])
     st.write(dfAll) 
-    st.write("Page : "+ str(st.session_state.count) +" sur "+ str(int(last_page)))
 
 st.title('Projet Open Food Facts')
 st.write('Filter by Categories with "A" nutritious score') 
