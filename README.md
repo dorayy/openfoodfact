@@ -1,13 +1,18 @@
 # Install
 
 ```console
-foo@bar:~$ pip install streamlit
+pip install streamlit
+pip install mysql-connector-python
+pip install openfoodfacts
+pip install mysql-python
+pip install mysqlclient
+pip install SQLAlchemy
 ```
 
 ## Launch main file
 
 ```console
-foo@bar:~$ streamlit run main.py
+streamlit run main.py
 ```
 
 ## Documentation
