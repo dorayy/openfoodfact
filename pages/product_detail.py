@@ -63,7 +63,7 @@ if st.experimental_get_query_params():
         ## Partie nettoyage
 
         # Filtre proposant les nutriscore supérieur à celui existant
-        df = df[df['nutriscore_grade'] < product['product']['nutriscore_grade']]
+        df = df[df['nutriscore_grade'] <= product['product']['nutriscore_grade']]
         df = df.sort_values(by=['nutriscore_grade'])
 
         # Suppression des données incorrectes
