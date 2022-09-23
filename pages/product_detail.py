@@ -5,6 +5,7 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 from sqlalchemy import create_engine
 
+
 st.title('Product détail page')
 
 
@@ -52,6 +53,7 @@ if st.experimental_get_query_params():
     ean = ean.get('ean')[0]
     product = get_product(ean)
     show_page()
+
 
     if st.checkbox('Recherche des subsituts'):
         subsitutData = get_substitut(ean)
